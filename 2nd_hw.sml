@@ -72,3 +72,52 @@ fun card_color card =
         (Diamonds, _) => Red
         | (Hearts, _) => Red
         | _ => Black
+
+fun card_value card =
+    case card of
+        (_, Num rank) => rank
+        | (_, Ace) => 11
+        | _ => 10
+
+fun remove_card (cards, card, e) =
+    case cards of
+        [] => raise e
+        | head::tail => if head = card then tail else remove_card(tail, card, e)
+
+fun all_same_color cards =
+    case cards of
+        head::neck::tail => if card_color head = card_color neck then all_same_color(neck::tail) else false
+        | _ => true
+
+fun sum_cards cards =
+    let
+        fun aux (list, res) =
+            case list of
+                [] => res
+                | head::tail => aux(tail, res + card_value head)
+    in
+        aux(cards, 0)
+    end
+
+fun score (cards, goal) =
+    let
+        val sum = sum_cards(cards)
+        val preliminary = if sum > goal then 3 * (sum - goal) else goal - sum
+    in
+        case all_same_color(cards) of
+            true => preliminary div 2
+            | false => preliminary
+    end
+    
+fun officiate (draw_pile, move_list, goal) =
+    let
+        fun turn (moves, draws, hand) =
+            case (moves, draws, hand) of
+                ([], _, _) => score(hand, goal)
+                | (Draw::moves', [], hand) => score(hand, goal)
+                | (Draw::moves', next::draw', hand) =>
+                    if sum_cards(next::hand) > goal then score(next::hand, goal) else turn(moves', draw', next::hand)
+                | (Discard card::moves', draw, hand) => turn(moves', draw, remove_card(hand, card, IllegalMove))
+    in
+        turn(move_list, draw_pile, [])
+    end
