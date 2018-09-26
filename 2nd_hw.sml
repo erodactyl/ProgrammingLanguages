@@ -8,19 +8,14 @@ fun same_string(s1 : string, s2 : string) =
 
 (* put your solutions for problem 1 here *)
 
-fun all_except_option (str, list) =
-    let fun aux (list', exists) = 
-        case list' of
-            [] => ([], exists)
-            | head::tail => 
-                if same_string(head, str)
-                then aux(tail, true)
-                else let val (rest_list, rest_exists) = aux(tail, exists) in (head::rest_list, rest_exists) end
-    in
-        case aux(list, false) of
-            (_, false) => NONE
-            | (list, _) => SOME list
-    end
+fun all_except_option (s,xs) =
+  case xs of
+      [] => NONE
+    | x::xs' => if same_string(s,x)
+                then SOME xs'
+                else case all_except_option(s,xs') of
+                         NONE => NONE
+                       | SOME y => SOME(x::y)
 
 fun get_substitutions1 (list, str) =
     case list of
