@@ -99,9 +99,7 @@ fun score (cards, goal) =
         val sum = sum_cards(cards)
         val preliminary = if sum > goal then 3 * (sum - goal) else goal - sum
     in
-        case all_same_color(cards) of
-            true => preliminary div 2
-            | false => preliminary
+        if all_same_color(cards) then preliminary div 2 else preliminary
     end
     
 fun officiate (draw_pile, move_list, goal) =
