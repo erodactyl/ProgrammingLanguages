@@ -98,7 +98,7 @@ fun check_pat pattern =
       case p of
           Variable str => [str]
           | TupleP ps => List.foldl (fn (curr, acc) => pattern_to_list(curr) @ acc) [] ps
-          | ConstructorP (str, p') => pattern_to_list(p)
+          | ConstructorP (str, p') => pattern_to_list(p')
           | _ => []
     fun has_dups l =
       case l of
