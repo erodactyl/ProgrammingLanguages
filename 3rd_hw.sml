@@ -115,7 +115,8 @@ fun match (value, pattern) =
     | (_, Wildcard) => SOME []
     | (value, Variable str) => SOME [(str, value)]
     | (Constructor (str_val, val'), ConstructorP (str_pat, pat)) => if str_val = str_pat then match (val', pat) else NONE
-    | (Tuple vals, TupleP pats) => all_answers match (ListPair.zip(vals, pats))
+    | (Tuple vals, TupleP pats) => if length vals = length pats 
+      then all_answers match (ListPair.zip(vals, pats)) else NONE
     | _ => NONE
 
 fun first_match value patterns =
