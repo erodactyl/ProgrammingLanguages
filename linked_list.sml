@@ -10,6 +10,7 @@ sig
   val toNativeList : 'a linkedlist -> 'a list
   val map : ('a -> 'b) -> 'a linkedlist -> 'b linkedlist
   val fold : ('a * 'b -> 'b) -> 'b -> 'a linkedlist -> 'b
+  val length : 'a linkedlist -> int
 end
 
 structure LinkedList :> LINKEDLIST =
@@ -55,4 +56,9 @@ struct
     case list of
       Empty => value
       | Node(head, tail) => fold reducer (reducer(head, value)) tail
+
+  fun length list =
+    case list of
+      Empty => 0
+      | Node(_, tail) => 1 + length tail
 end
