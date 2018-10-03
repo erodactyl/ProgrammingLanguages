@@ -9,6 +9,7 @@ sig
   val concat : 'a linkedlist * 'a linkedlist -> 'a linkedlist
   val toNativeList : 'a linkedlist -> 'a list
   val map : ('a -> 'b) -> 'a linkedlist -> 'b linkedlist
+  val fold : ('a * 'b -> 'b) -> 'b -> 'a linkedlist -> 'b
 end
 
 structure LinkedList :> LINKEDLIST =
@@ -49,4 +50,9 @@ struct
     case list of
       Empty => []
       | Node(head, tail) => head::toNativeList(tail)
+
+  fun fold reducer value list =
+    case list of
+      Empty => value
+      | Node(head, tail) => fold reducer (reducer(head, value)) tail
 end
