@@ -6,6 +6,9 @@ sig
   val prepend : 'a linkedlist * 'a -> 'a linkedlist
   val head : 'a linkedlist -> 'a
   val tail : 'a linkedlist -> 'a linkedlist
+  val concat : 'a linkedlist * 'a linkedlist -> 'a linkedlist
+  val toNativeList : 'a linkedlist -> 'a list
+  val map : ('a -> 'b) -> 'a linkedlist -> 'b linkedlist
 end
 
 structure LinkedList :> LINKEDLIST =
@@ -31,4 +34,19 @@ struct
     case list of
       Empty => raise EmptyList
       | Node(h, t) => t
+
+  fun concat (list1, list2) =
+    case list1 of
+      Empty => list2
+      | Node(head, tail) => Node(head, concat(tail, list2))
+
+  fun map f list =
+    case list of
+      Empty => Empty
+      | Node(head, tail) => append(map f tail, f head)
+
+  fun toNativeList list =
+    case list of
+      Empty => []
+      | Node(head, tail) => head::toNativeList(tail)
 end
