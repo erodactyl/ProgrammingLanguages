@@ -2,8 +2,8 @@ signature LINKEDLIST =
 sig
   exception EmptyList
   datatype 'a linkedlist = Empty | Node of ('a * ('a linkedlist))
-  val append : 'a linkedlist * 'a -> 'a linkedlist
-  val prepend : 'a linkedlist * 'a -> 'a linkedlist
+  val append : 'a * 'a linkedlist -> 'a linkedlist
+  val prepend : 'a * 'a linkedlist -> 'a linkedlist
   val head : 'a linkedlist -> 'a
   val tail : 'a linkedlist -> 'a linkedlist
   val concat : 'a linkedlist * 'a linkedlist -> 'a linkedlist
@@ -17,15 +17,15 @@ structure LinkedList :> LINKEDLIST =
 struct
   exception EmptyList
   datatype 'a linkedlist = Empty | Node of ('a * ('a linkedlist))
-  fun append (list, el) =
+  fun append (el, list) =
   case list of
     Empty => Node(el, Empty)
     | Node _ => Node(el, list)
 
-  fun prepend (list, el) =
+  fun prepend (el, list) =
     case list of
       Empty => Node(el, Empty)
-      | Node(head, tail) => append(prepend(tail, el), head)
+      | Node(head, tail) => append(head, prepend(el, tail))
 
   fun head list =
     case list of
@@ -45,7 +45,7 @@ struct
   fun map f list =
     case list of
       Empty => Empty
-      | Node(head, tail) => append(map f tail, f head)
+      | Node(head, tail) => append(f head, map f tail)
 
   fun toNativeList list =
     case list of
